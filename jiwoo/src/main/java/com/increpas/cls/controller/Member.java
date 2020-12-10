@@ -1,7 +1,9 @@
 package com.increpas.cls.controller;
 
+
 import javax.servlet.http.*;
 
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,8 @@ public class Member {
 		return "member/login";
 	}
 
+	private static final Logger logger = LoggerFactory.getLogger(Member.class);
+	
 	@RequestMapping(path="/loginProc.cls", params={"id", "pw"}, method=RequestMethod.POST)
 	public ModelAndView loginProc(ModelAndView mv, RedirectView rd,
 												HttpSession session, MemberVO mVO) {
@@ -32,6 +36,7 @@ public class Member {
 			rd.setUrl("/cls/member/login.cls");
 		} else {
 			session.setAttribute("SID", mVO.getId());
+			logger.info(mVO.getId() + " - Login");
 			rd.setUrl("/cls/main.cls");
 		}
 		
@@ -59,4 +64,17 @@ public class Member {
 //		}
 		return mv;
 	}
+	@RequestMapping("/logout.cls")
+	public ModelAndView logout(ModelAndView mv, HttpSession session) {
+		// 할일
+		// 세션에 기록 내용(속성 : SID)을 지운다.
+		String sid = (String)session.getAttribute("SID");
+		session.removeAttribute("SID");
+		logger.info(sid + " #####logout#####");
+		// 뷰를 지정한다.
+		mv.setViewName("redirect:/main.cls");
+		
+		return mv;
+	}
+	
 }

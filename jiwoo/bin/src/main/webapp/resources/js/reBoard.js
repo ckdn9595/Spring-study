@@ -23,6 +23,7 @@ $(function(){
 			// sno가 null 또는 Undefined 인 경우는 페이지번호 버튼이다.
 			sno = $(this).text();
 		}
+		
 		$('#nowPage').val(sno);
 		$('#pfrm').submit();
 	});
@@ -74,7 +75,7 @@ $(function(){
 	// 게시글 수정 이벤트 처리
 	$('.ebtn').click(function(){
 		
-		
+		/*
 		// 모달창 사용해서 처리하는 방법
 		// 버튼 내용 변경
 		$('#wrbtn').html('edit');
@@ -90,12 +91,11 @@ $(function(){
 		// 내용 입력태그에 입력하고
 		$('#body').val(tbody);
 		$('#wmodal').css('display', 'block');
-		
+		*/
 		
 		// 새로운 뷰를 요청해서 처리하는 방법
 		// 데이터 입력태그에 셋팅하고
 		// 글번호 셋팅
-		/*
 		var tno = $(this).attr('id').substring(1);
 		$('#tno').val(tno);
 		
@@ -106,7 +106,7 @@ $(function(){
 		$('#frm').attr('method', 'POST');
 		$('#frm').attr('action', '/cls/reBoard/reBoardEditView.cls');
 		$('#frm').submit();
-		*/
+		
 	});
 	
 	$('#rbtn').click(function(){
@@ -120,6 +120,7 @@ $(function(){
 		// 데이터 읽고
 		var txt = $('#body').val();
 		var url = '/cls/reBoard/reBoardWriteProc.cls';
+		
 		if(str != 'edit'){
 			if(!txt){
 				alert('# 메세지를 입력하세요!');

@@ -3,15 +3,26 @@
 	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	"http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+<!-- myBatis의 활동 방식 설정 -->
+	<settings>
+		<setting name="cacheEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" />
+	</settings>
+	
 	<!-- 마이바티스에서 사용할 자바 타입의 별칭 선언하는 부분... -->
 	<typeAliases>
 		<typeAlias alias="mVO" type="com.increpas.cls.vo.MemberVO" />
+		<typeAlias alias="reVO" type="com.increpas.cls.vo.ReBoardVO" />
+		<typeAlias alias="bVO" type="com.increpas.cls.vo.BoardVO" />
+		<typeAlias alias="fVO" type="com.increpas.cls.vo.FileVO" />
+		<typeAlias alias="page" type="com.increpas.cls.util.PageUtil" />
 	</typeAliases>
 	
 	<mappers>
 		<mapper resource="com/increpas/cls/sql/MemberSQL.xml" />
-		<!--
+		<mapper resource="com/increpas/cls/sql/ReBoardSQL.xml" />
 		<mapper resource="com/increpas/cls/sql/BoardSQL.xml" />
-		-->
+		
 	</mappers>
 </configuration>

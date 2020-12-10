@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC  "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reSQL">
+	<select id="selAvt" resultType="string" parameterType="string">
+		SELECT 
+			afile avatar 
+		FROM 
+			member, avatar 
+		WHERE 
+			isshow = 'Y' 
+			AND avt = ano 
+			AND id = #{id}
+	</select>
+	<select id="selCnt" resultType="int">
+		SELECT 
+			COUNT(*) cnt 
+		FROM 
+			reboard 
+		WHERE 
+			isshow = 'Y' 
+	</select>
+	<select id="selReBoard" resultType="reVO" parameterType="page">
+		SELECT 
+			    * 
+			FROM 
+				( 
+			    	SELECT 
+				        rownum rno, r.* 
+				    FROM 
+				        (SELECT 
+				            bno, b_mno mno, id, ano, afile avatar, body, wdate, upno, (level - 1) step 
+				        FROM 
+				            reboard re, member m, avatar a 
+				        WHERE 
+				            re.isshow = 'Y' 
+				            AND b_mno = mno 
+				            AND avt = ano 
+				        START WITH 
+				            upno IS NULL 
+				        CONNECT BY 
+				            PRIOR bno = upno 
+				        ORDER SIBLINGS BY 
+				            wdate DESC) r 
+				) 
+			WHERE 
+			    rno BETWEEN #{startCont} AND #{endCont} 
+	</select>
+	<insert id="addContent" parameterType="reVO">
+		<selectKey keyProperty="mno" resultType="int" order="BEFORE">
+			SELECT
+				mno
+			FROM
+				member
+			where id = #{id}
+		</selectKey>
+			INSERT INTO 
+				reboard(bno, b_mno, body) 
+			VALUES( 
+				(SELECT NVL(MAX(bno) + 1, 10001) FROM reboard), 
+				#{mno}, #{body}
+			) 
+	</insert>
+	<update id="delProc" parameterType="int">
+			UPDATE 
+				reboard 
+			SET 
+				isshow = 'N' 
+			WHERE 
+				bno = #{bno}
+	</update>
+	<update id="editProc" parameterType="reVO">
+			UPDATE 
+				reboard 
+			SET 
+				body = #{body} 
+			WHERE 
+				bno = #{bno}
+	</update>
+	<insert id="addReBoard" parameterType="reVO">
+			<selectKey keyProperty="mno" resultType="int" order="BEFORE">
+				SELECT
+					mno
+				FROM
+					member
+				where id = #{id}
+			</selectKey>
+			INSERT INTO 
+				reboard(bno, b_mno, body, upno) 
+			VALUES( 
+				(SELECT NVL(MAX(bno) + 1, 10001) FROM reboard), 
+				#{mno},
+				#{body}, #{upno} 
+			) 
+	</insert>
+</mapper>

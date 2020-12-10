@@ -3,7 +3,91 @@
 		PUBLIC  "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="bSQL">
-	<select id="" resultType="" parameterType="">
-	
+	<select id="getList" resultType="bVO" parameterType="page">
+		select
+		    rno, bno, title, id, wtime, wdate, click, cnt
+		from
+		        (
+		        SELECT
+		            ROWNUM rno, bno, title, id, wtime, wdate, click, cnt
+		        FROM 
+		            (
+		            SELECT
+		                bno, title, id, bdate wtime, bdate wdate, bclick click, NVL(cnt, 0) cnt
+		            FROM
+		                board, member,
+		                            (
+		                              select
+		                                fbno, count(*) cnt
+		                              from
+		                                fileinfo
+		                              group by
+		                                fbno
+		                            )f
+		            WHERE
+		                bmno = mno
+		                and bno = fbno(+)
+		                and bisshow = 'Y'
+		            ORDER BY
+		                bdate desc
+		            ) 
+		        )
+		where rno between #{startCont} And #{endCont}
 	</select>
+	<select id = "getTotal" resultType="int">
+		SELECT
+			count(*)
+		FROM
+			board
+		WHERE
+			bisshow = 'Y'
+	</select>
+	<select id = "getDetail" resultType="bVO" parameterType="int">
+		SELECT
+			bno, id, title, body, bdate wtime, bdate wdate, bclick click
+		FROM
+			board, member
+		WHERE
+			bno = #{bno}
+			and bmno = mno
+	</select>
+	<select id = "getImage" resultType="fVO" parameterType="int">
+		SELECT
+			fno, oriname, savename, fdate, fdate ftime, fcount
+		FROM
+			fileinfo
+		WHERE
+			fbno = #{bno}
+			and fisshow = 'Y'
+	</select>
+	<insert id = "addBoard"  parameterType="bVO">
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			SELECT
+				NVL(MAX(bno)+1, 10001)
+			FROM
+				board
+		</selectKey>
+		INSERT INTO
+		    board(bno, bmno, title, body)
+		VALUES(
+		    #{bno},
+		    (SELECT mno FROM member WHERE id = #{id} ),
+		    #{title}, #{body}
+		)
+	</insert>
+	<insert id = "addFile"  parameterType="fVO">
+		<selectKey keyProperty="fno" resultType="int" order="BEFORE">
+			SELECT
+				NVL(MAX(fno)+1, 1000001)
+			FROM
+				fileinfo
+		</selectKey>
+		INSERT INTO
+		   fileinfo(fno, fbno, oriname, savename, dir, len)
+		VALUES(
+		    #{fno}, #{bno},#{oriname},#{savename}, 'img/upload/',#{len}
+		)
+	</insert>
+	
+	
 </mapper>

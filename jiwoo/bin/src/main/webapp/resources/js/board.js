@@ -41,10 +41,6 @@ $(document).ready(function(){
 	$('#hbtn').click(function(){
 		$(location).attr('href', '/cls/main.cls');
 	});
-	$('#cbtn').click(function(){
-		$('#frm').attr('action', '/cls/board/boardList.cls');
-		$('#frm').submit();
-	});
 	
 /* 게시글 작성 페이지 이벤트 처리*/
 	$('#wbtn').click(function(){
@@ -107,7 +103,7 @@ $(document).ready(function(){
 		$(fr).append(timg);
 		
 		$('#fileimg').append(fr);
-//		setCno(getCno() + 1);
+		setCno(getCno() + 1);
 		
 		let cls = '#addImg' + n;
 		
@@ -124,7 +120,7 @@ $(document).ready(function(){
 		var tag = $(document.createElement('input'));
 		$(tag).addClass('w3-col w3-input w3-border pdl10 mb5 upfile');
 		$(tag).attr('type', 'file');
-		$(tag).attr('name', 'file');
+		$(tag).attr('name', 'file' + no);
 		$(tag).attr('id', 'file' + no);
 		$(tag).attr('placeholder', '파일을 선택하세요!');
 		
@@ -137,7 +133,7 @@ $(document).ready(function(){
 				
 			} else {
 				let tfile = URL.createObjectURL(e.target.files[0]);
-				alert(tfile);
+				
 				// img 태그 추가
 				addImg(tfile, no);
 				
